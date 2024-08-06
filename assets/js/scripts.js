@@ -3,8 +3,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     let currentPage = 1;
     const productsPerPage = 10;
     let loadMoreButton = '';
+    const checkboxesEvent =  document.querySelectorAll('.filterCheckbox');
+    let searchQuery = '';
+    let sortBy = 'default';
 
-
+    checkboxesEvent.forEach(checkbox => {
+        checkbox.addEventListener('change', function (event) {
+          // Count checked checkboxes
+        //   console.log(event.target.value)
+        //   const selectedCheckboxValues = Array.from(checkboxesEvent).filter(cb => cb.checked).map((cb) =>cb.value);
+        //   console.log(checkedCount);
+        initialize();
+        updateContent();
+        });
+        
+      });
 
     const sortProducts = (products, sortBy) => {
         switch (sortBy) {
@@ -24,8 +37,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const sortSelect = document.querySelector('#sort-select');
     if (sortSelect) {
         sortSelect.addEventListener('change', (event) => {
-            const sortBy = event.target.value;
-            updateContent(null, sortBy);
+            sortBy = event.target.value;
+            initialize();
+            updateContent();
         });
     }
 
@@ -42,10 +56,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     const searchInput = document.querySelector('#menSearch');
     if (searchInput) {
         searchInput.addEventListener('input', (event) => {
-            const query = event.target.value.toLowerCase();
-            // searchProducts(query);
-            console.log(query)
+            searchQuery = event.target.value.toLowerCase();
+            initialize();
+            updateContent();
         });
+    }
+
+    const initialize = () => {
+        // Clear the existing content
+        currentPage = 1;
+        const productsList = document.querySelector('.products-list');
+        if (productsList) {
+            productsList.innerHTML = '';
+        }
     }
 
     const fetchProducts = async () => {
@@ -83,7 +106,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         updateContent();
     };
 
-    const updateContent = (searchQuery = '', sortBy = 'default') => {
+    const updateContent = () => {
+        
+       
         console.log('Updating', searchQuery, sortBy);
         const filteredProducts = getFilteredData();
 
@@ -95,11 +120,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Apply sorting
         const sortedProducts = sortProducts(searchFilteredProducts, sortBy);
 
-        // Clear the existing content
         const productsList = document.querySelector('.products-list');
-        if (productsList) {
-            productsList.innerHTML = '';
-        }
+        // if (productsList) {
+        //     productsList.innerHTML = '';
+        // }
 
         // Pagination logic
         const start = (currentPage - 1) * productsPerPage;
