@@ -49,7 +49,7 @@ Handles the logic for displaying products, filtering, and other interactive feat
 
    ```bash
    git clone https://github.com/yourusername/venia.git
-   cd venia
+   cd feature/men-plp-page
    ```
 
 2. **Open the Project:**
