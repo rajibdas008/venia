@@ -8,24 +8,23 @@ Venia is a simple product list page built using pure HTML, JavaScript, and CSS. 
 - **Filtering:** Allows users to filter products based on categories or price ranges.
 - **Responsive Design:** Ensures that the product list page looks good on both desktop and mobile devices.
 
+## Project Structure
+
 The project has the following structure:
 
 venia/
 │
-├── index.html # Main HTML file for the product list page
+├── index.html           # Main HTML file for the product list page
 │
-└── assets/ # Folder containing all static assets
-├── css/ # Folder for CSS files
-│ ├── global-styles.css # Global styles for the project
-│ └── responsive-styles.css # Responsive styles for different screen sizes
-│
-├── images/ # Folder for images used in the project
-│
-└── js/ # Folder for JavaScript files
-└── script.js # JavaScript file for interactivity and functionality
-
-shell
-Copy code
+└── assets/              # Folder containing all static assets
+    ├── css/             # Folder for CSS files
+    │   ├── global-styles.css   # Global styles for the project
+    │   └── responsive-styles.css # Responsive styles for different screen sizes
+    │
+    ├── images/          # Folder for images used in the project
+    │
+    └── js/              # Folder for JavaScript files
+        └── script.js   # JavaScript file for interactivity and functionality
 
 ### index.html
 
@@ -43,6 +42,7 @@ Includes styles specifically for responsive design, ensuring that the page looks
 
 Handles the logic for displaying products, filtering, and other interactive features.
 
+=============
 ## Installation
 
 1. **Clone the Repository:**
