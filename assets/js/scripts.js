@@ -3,129 +3,52 @@ document.addEventListener('DOMContentLoaded', async () => {
     let currentPage = 1;
     const productsPerPage = 10;
     let loadMoreButton = '';
-    const checkboxesEvent =  document.querySelectorAll('.filterCheckbox');
+    const checkboxesEvent = document.querySelectorAll('.filterCheckbox');
     let searchQuery = '';
     let sortBy = 'default';
 
-    checkboxesEvent.forEach(checkbox => {
-        checkbox.addEventListener('change', function (event) {
-          // Count checked checkboxes
-        //   console.log(event.target.value)
-        //   const selectedCheckboxValues = Array.from(checkboxesEvent).filter(cb => cb.checked).map((cb) =>cb.value);
-        //   console.log(checkedCount);
-        initialize();
-        updateContent();
-        });
-        
-      });
-
-    const sortProducts = (products, sortBy) => {
-        switch (sortBy) {
-            case 'price-asc':
-                return products.sort((a, b) => a.price - b.price);
-            case 'price-desc':
-                return products.sort((a, b) => b.price - a.price);
-            case 'name-asc':
-                return products.sort((a, b) => a.title.localeCompare(b.title));
-            case 'name-desc':
-                return products.sort((a, b) => b.title.localeCompare(a.title));
-            default:
-                return products; // Default sorting or no sorting
-        }
-    };
-
-    const sortSelect = document.querySelector('#sort-select');
-    if (sortSelect) {
-        sortSelect.addEventListener('change', (event) => {
-            sortBy = event.target.value;
-            initialize();
-            updateContent();
-        });
-    }
-
-    const getFilteredData = () => {
-        const categories = Array.from(document.querySelectorAll('.men-filter input[type="checkbox"]:checked'))
-            .map(checkbox => checkbox.value);
-
-        return menProducts.filter(product => {
-            if (categories.length === 0) return true;
-            return categories.includes(product.category);
-        });
-    };
-
-    const searchInput = document.querySelector('#menSearch');
-    if (searchInput) {
-        searchInput.addEventListener('input', (event) => {
-            searchQuery = event.target.value.toLowerCase();
-            initialize();
-            updateContent();
-        });
-    }
-
+    // Function to initialize content
     const initialize = () => {
-        // Clear the existing content
         currentPage = 1;
         const productsList = document.querySelector('.products-list');
         if (productsList) {
             productsList.innerHTML = '';
         }
-    }
+    };
 
+    // Function to fetch products
     const fetchProducts = async () => {
         const loader = document.querySelector('#loader');
-
         const loadMoreButton = document.querySelector('.load-more-products');
-
         const seeResultsProducts = document.querySelector('.see-results-products');
 
         if (loader) loader.classList.remove('hidden');
-
         if (loadMoreButton) loadMoreButton.classList.add('hidden');
-
         if (seeResultsProducts) seeResultsProducts.classList.add('hidden');
 
         try {
             const response = await fetch('https://fakestoreapi.com/products');
             const allProducts = await response.json();
             menProducts = allProducts;
-            console.log('Fetching men\'s clothing products:', menProducts);
             updateContent();
         } catch (error) {
             console.error('Error fetching products:', error);
         } finally {
             if (loader) loader.classList.add('hidden');
-
             if (loadMoreButton) loadMoreButton.classList.remove('hidden');
-
             if (seeResultsProducts) seeResultsProducts.classList.remove('hidden');
         }
     };
-    const loadMoreProducts = async () => {
-        console.log('Loading more products', currentPage)
-        currentPage++;
-        updateContent();
-    };
 
+    // Function to update content
     const updateContent = () => {
-        
-       
-        console.log('Updating', searchQuery, sortBy);
         const filteredProducts = getFilteredData();
-
-        // Apply search filter
         const searchFilteredProducts = filteredProducts.filter(product =>
             product.title.toLowerCase().includes(searchQuery)
         );
-
-        // Apply sorting
         const sortedProducts = sortProducts(searchFilteredProducts, sortBy);
 
         const productsList = document.querySelector('.products-list');
-        // if (productsList) {
-        //     productsList.innerHTML = '';
-        // }
-
-        // Pagination logic
         const start = (currentPage - 1) * productsPerPage;
         const end = Math.min(start + productsPerPage, sortedProducts.length);
         const productsToShow = sortedProducts.slice(start, end);
@@ -161,16 +84,93 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
+    // Function to get filtered data
+    const getFilteredData = () => {
+        const categories = Array.from(document.querySelectorAll('.men-filter input[type="checkbox"]:checked'))
+            .map(checkbox => checkbox.value);
+        return menProducts.filter(product => {
+            if (categories.length === 0) return true;
+            return categories.includes(product.category);
+        });
+    };
+
+    const sortSelect = document.querySelector('#sort-select');
+    if (sortSelect) {
+        sortSelect.addEventListener('change', (event) => {
+            sortBy = event.target.value;
+            initialize();
+            updateContent();
+        });
+    }
+
+    // Function to sort products
+    const sortProducts = (products, sortBy) => {
+        switch (sortBy) {
+            case 'price-asc':
+                return products.sort((a, b) => a.price - b.price);
+            case 'price-desc':
+                return products.sort((a, b) => b.price - a.price);
+            case 'name-asc':
+                return products.sort((a, b) => a.title.localeCompare(b.title));
+            case 'name-desc':
+                return products.sort((a, b) => b.title.localeCompare(a.title));
+            default:
+                return products; // Default sorting or no sorting
+        }
+    };
+
+    // Event listener for checkboxes
+    checkboxesEvent.forEach(checkbox => {
+        checkbox.addEventListener('change', function () {
+            initialize();
+            updateContent();
+        });
+    });
+
+    // Open the filter modal
+    document.querySelector('.mob-filter').addEventListener('click', function () {
+        document.getElementById('filterModal').style.display = 'flex';
+        document.getElementById('filterModal').style.alignItems = 'center';
+    });
+
+    // Close the filter modal
+    document.getElementById('modalClose').addEventListener('click', function () {
+        document.getElementById('filterModal').style.display = 'none';
+    });
+
+    // Open the sort modal
+    document.querySelector('.mob-sort')?.addEventListener('click', function () {
+        document.getElementById('sortModal').style.display = 'flex';
+        document.getElementById('sortModal').style.alignItems = 'center';
+    });
+
+    // Close the sort modal
+    document.getElementById('sortModalClose').addEventListener('click', function () {
+        document.getElementById('sortModal').style.display = 'none';
+    });
+
+    // Handle the sort selection in the modal
+    document.querySelectorAll('#sortModal input[type="radio"]').forEach(radio => {
+        radio.addEventListener('change', function (event) {
+            sortBy = event.target.value;
+            initialize();
+            updateContent();
+        });
+    });
 
     // Handle drawer open and close
     const drawer = document.querySelector('#drawer');
     const drawerOpenButton = document.querySelector('#drawerOpen');
     const drawerCloseButton = document.querySelector('#drawerClose');
+    const overlay = document.querySelector('#overlay');
+    const body = document.body;
 
     if (drawerOpenButton) {
         drawerOpenButton.addEventListener('click', () => {
             if (window.innerWidth <= 320) {
                 drawer.classList.add('open');
+                if (overlay) overlay.style.display = 'block';
+                body.classList.add('no-scroll');
             }
         });
     }
@@ -178,8 +178,41 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (drawerCloseButton) {
         drawerCloseButton.addEventListener('click', () => {
             drawer.classList.remove('open');
+            if (overlay) overlay.style.display = 'none';
+            body.classList.remove('no-scroll');
         });
     }
+    if (overlay) {
+        overlay.addEventListener('click', () => {
+            drawer.classList.remove('open');
+            overlay.style.display = 'none';
+            body.classList.remove('no-scroll');
+        });
+    }
+
+    const searchInput = document.querySelector('#menSearch');
+    if (searchInput) {
+        searchInput.addEventListener('input', (event) => {
+            searchQuery = event.target.value.toLowerCase();
+            initialize();
+            updateContent();
+        });
+    }
+    const searchInputMobile = document.querySelector('#menSearchMobile');
+    if (searchInputMobile) {
+        searchInputMobile.addEventListener('input', (event) => {
+            searchQuery = event.target.value.toLowerCase();
+            initialize();
+            updateContent();
+        });
+    }
+
+
+    // Handle load more button
+    const loadMoreProducts = async () => {
+        currentPage++;
+        updateContent();
+    };
 
     await fetchProducts();
     loadMoreButton = document.querySelector('#load-more');

@@ -92,6 +92,7 @@
         transition: 0.3s;
         box-shadow: 0.125rem 0 0.313rem rgba(0, 0, 0, 0.5);
         font-size: 0.938rem;
+        z-index: 999;
     }
 
     .drawer-header {
@@ -108,6 +109,24 @@
         left: 0;
     }
 
+    /* Overlay styling */
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        /* Semi-transparent background */
+        display: none;
+        /* Hidden by default */
+        z-index: 998;
+    }
+
+    #drawer.open~#overlay {
+        display: block;
+    }
+
     .drawer-close {
         font-size: 1.5rem;
         background: none;
@@ -117,7 +136,16 @@
     }
 
     .drawer-content {
-        padding: 1.25rem;
+        padding: 0.25rem 1.25rem;
+        /* margin: 0.625rem 0rem; */
+    }
+
+    .header-drawer-menu {
+        display: flex;
+        color: var(--black) !important;
+        text-decoration: none !important;
+        line-height: 2rem;
+        flex-direction: column;
     }
 
     .see-results-products {
